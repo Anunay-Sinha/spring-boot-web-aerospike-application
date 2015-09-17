@@ -23,9 +23,13 @@ In this Spring Boot tutorial I’m going to walk you through step by step in dev
 === Creating the Spring Boot Project Using Eclipse
 
 Start up eclipse and create a new Maven project. Select Create a simple project and when asked for Maven configuration select Group Id of "org.aerospike" with artifact Id of "aerospike-spring-boot", select Finnish
+
 image::mavenstructure.jpg[MavenStructure]
 
-==== pom.xml
+[source]
+--
+pom.xml
+--
 
 Here is the Maven POM file you should create. This was customized for us based on the options we selected in the Spring Initializer. The presence of these dependencies is important because Spring Boot will make decisions on what to create automatically when certain things are found on the classpath. 
 
@@ -107,9 +111,12 @@ Here is the Maven POM file you should create. This was customized for us based o
 </project>
 ----
 
-==== SpringBooWebApplication.java
+[source]
+--
+SpringBootWebApplication.java
+--
 
-Create us a very basic Spring Boot application class. Technically, this is a Spring Configuration class. The annotation @SpringBootApplication enables the Spring Context and all the startup magic of Spring Boot.
+Create us a very basic Spring Boot application class. Technically, this is a Spring Configuration class. The annotation *@SpringBootApplication* enables the Spring Context and all the startup magic of Spring Boot.
 
 [source,java]
 ----
@@ -128,9 +135,12 @@ public class SpringBootWebApplication {
 }
 ----
 
-==== SpringBootWebApplicationTests.java
+[source]
+--
+SpringBootWebApplicationTests.java
+--
 
-We’re also give a stub of a JUnit Integration test. 
+Here's a sample of a JUnit Integration test. 
 
 [source,java]
 ----
@@ -156,6 +166,6 @@ public class SpringBootWebApplicationTests {
 ----
 
 
---- Conclusion
+== Conclusion
 
 In this section we've taken a look on using maven with Spring boot inside an eclipse application

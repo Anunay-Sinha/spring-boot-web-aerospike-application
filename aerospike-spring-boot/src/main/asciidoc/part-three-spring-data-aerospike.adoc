@@ -1,7 +1,11 @@
 [[part-three-spring-data-aerospike]]
-= Spring Boot Web Application- using Spring Data Aerospike
+= Spring Boot Web Application using Spring Data Aerospike
 
-In the first part of this tutorial series on creating a web application using Spring Boot, I showed how to create the Maven project with Spring Boot. In the second part, I showed you how to configure Spring MVC and ThymeLeaf templates to display a basic web page via Tomcat. In this part we’ll connect to an Aerospike server via Spring Data Aerospike. We will use these tools to persist data to Aerospike in our Spring Boot Web Application.
+In the first part of this tutorial series on creating a web application using Spring Boot, I showed how to create the Maven project with Spring Boot. 
+
+In the second part, I showed you how to configure Spring MVC and ThymeLeaf templates to display a basic web page via Tomcat. 
+
+In this part we’ll connect to an Aerospike server via Spring Data Aerospike. We will use these tools to persist data to Aerospike in our Spring Boot Web Application.
 
 == Aerospike Persistence with Spring Boot
 
@@ -15,16 +19,21 @@ Aerospike is the company behind the Aerospike open source NoSQL distributed data
 
 Aerospike is developed and optimized for 64-bit Linux. Aerospike supports popular Linux distributions, with .rpm packages for Red Hat variants, .deb packages for Ubuntu and Debian, binary packages and source builds.
 
-Aerospike provides an https://aws.amazon.com/amazon-linux-ami/ [Amazon Linux AMI], prebuilt with the required dependencies. Other cloud providers are supported as well.
+Aerospike provides an https://aws.amazon.com/amazon-linux-ami/[Amazon Linux AMI], prebuilt with the required dependencies. Other cloud providers are supported as well.
 
 OS X and Windows are supported using Vagrant managed virtual machines. With the https://vagrantcloud.com/aerospike/[Vagrant cloud] virtual machine distribution system you will be able to download and run Aerospike with a few simple commands.
 
 Configuring Aerospike Server is out of scope please follow the instructions available here http://www.aerospike.com/docs/operations/install/[Install Aerospike]
 
-Aerospike and Spring Boot
+== Aerospike and Spring Boot
 
 Aerospike is by far the most popular. When you include the Spring Data Aerospike dependency in your Maven POM, Aerospike Spring Data is included by default. As typical with Spring Boot, Spring Data Aerospike is setup and configured with sensible default properties.
-=== pom.xml
+
+[source]
+--
+pom.xml
+--
+
 [source,xml]
 ----
 		<dependency>
@@ -40,7 +49,11 @@ In our example application, we’re going to use a product for a ecommerce websi
 
 By convention, I like to put my entity classes in a package called ‘domain’.
 
-=== Product.Java
+[source]
+--
+Product.Java
+--
+
 [source,java]
 ----
 package aerospike.springboot.domain;
@@ -94,7 +107,7 @@ Using Spring Data Aerospike can save you a lot of time when interacting with the
 
 You don’t need to use Spring Data Aerospike for this type of project. But using Spring Data Aerospike will make your life as a developer easier. A common alternative to Spring Data Aerospike would be to use the widely accepted DAO pattern, The DAO pattern is very similar to the Repository Pattern. The advantage of using Spring Data Aerospike is that you’ll be writing a lot less code. Spring Data Aerospike works a lot like Spring Integration Gateways, where you define an interface, and Spring provides the implementation at run time.
 
-==Spring Data Aerospike CRUD Repository
+== Spring Data Aerospike CRUD Repository
 
 The Spring Data Aerospike CRUD Repository is my favorite feature of Spring Data Aerospike. Similar to coding with a Spring Integration Gateway, you can just define an interface. Spring Data Aerospike uses generics and reflection to generate the concrete implementation of the interface we define.
 
@@ -102,7 +115,10 @@ Defining a repository for our Product domain class is as simple as defining a in
 
 For our Product domain class we can define a Spring Data Aerospike repository as follows.
 
-===ProductRepository.java
+[source]
+--
+ProductRepository.java
+--
 
 [source,java]
 ----
@@ -117,7 +133,7 @@ public interface ProductRepository extends AerospikeRepository<Product, Integer>
 }
 ----
 
-==Integration Testing with Spring Data Aerospike and JUnit
+== Integration Testing with Spring Data Aerospike and JUnit
 
 For our integration tests, we’re going to use a Spring Context to wire up beans to support our tests. If we were not using Spring Boot, we’d need to create a number of beans ourselves. Normally we would need to create:
 
@@ -127,7 +143,11 @@ For our integration tests, we’re going to use a Spring Context to wire up bean
 
 But since we’re using Spring Boot, we don’t need to write code to create these beans. For the purposes of our integration tests for our Spring Data Aerospike repositories, we can complete our Java configuration with just annotations.
 
-=== RepositoryConfiguration.java
+[source]
+--
+RepositoryConfiguration.java
+--
+
 [source,java]
 ----
 package aerospike.springboot.configuration;
@@ -142,32 +162,32 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.aerospike.client.AerospikeClient;
 import com.aerospike.client.policy.ClientPolicy;
 
-@Configuration																		//<1>
-@EnableAerospikeRepositories(basePackages = {"aerospike.springboot.repositories"}) 	//<2>
+@Configuration //<1>
+@EnableAerospikeRepositories(basePackages = {"aerospike.springboot.repositories"}) //<2>
 @EnableAutoConfiguration
-@EnableTransactionManagement														//<3>
+@EnableTransactionManagement //<3>
 public class RepositoryConfiguration {
 	
-	public @Bean(destroyMethod = "close") AerospikeClient aerospikeClient() {  		//<4>
+	public @Bean(destroyMethod = "close") AerospikeClient aerospikeClient() { //<4>
 
 		ClientPolicy policy = new ClientPolicy();
 		policy.failIfNotConnected = true;
 
-		return new AerospikeClient(policy, "localhost", 3000); 						//<5>
+		return new AerospikeClient(policy, "localhost", 3000); //<5>
 	}
 
-	public @Bean AerospikeTemplate aerospikeTemplate() {  							//<6>
+	public @Bean AerospikeTemplate aerospikeTemplate() { //<6>
 		return new AerospikeTemplate(aerospikeClient(), "test");
 	}
 
 }
 ----
-<1> '@Configuration'  tells the Spring Framework this is a Java configuration class.
-<2> '@EnableAerospikeRepositories(basePackages = {"aerospike.springboot.repositories"})"'  tells Spring Boot to do its auto configuration magic. This is what has Spring Boot automatically create the Spring Beans with sensible defaults for our tests.
-<3> '@EnableTransactionManagement' Enables Spring’s annotation driven transaction management
-<4> '@Bean' Configuration for AerospikeClient 
+<1> *@Configuration*  tells the Spring Framework this is a Java configuration class.
+<2> *@EnableAerospikeRepositories(basePackages = {"aerospike.springboot.repositories"})"*  tells Spring Boot to do its auto configuration magic. This is what has Spring Boot automatically create the Spring Beans with sensible defaults for our tests.
+<3> *@EnableTransactionManagement* Enables Spring’s annotation driven transaction management
+<4> *@Bean* Configuration for AerospikeClient 
 <5>  Host and port of Aerospike server
-<6>  '@Bean' Configuration for AerospikeTemplate 
+<6>  *@Bean* Configuration for AerospikeTemplate 
 
 Through this configuration, we have everything we need to use Aerospike with Spring Data Aerospike in JUnit tests.
 
@@ -187,7 +207,11 @@ In this post, I am not going to go in depth with Spring Data Aerospike. This is 
 
 I’ve written a simple integration test for the Spring Data Aerospike repository I defined above. In the test, I’m going to do some basic operations, like creating an entity, saving an entity, and fetching an entity from Aerospike. While I’ve written a minimal amount of code in this example, the data is really getting saved into Aerospike. You don’t see any aerospike code happening, but it is getting generated behind the scenes for us.  Once you grasp how little code you are writing, and how much is happening under the covers for you, you can appreciate what a powerful tool Spring Data Aerospike is.
 
-=== ProductRepositoryTest.java
+[source]
+--
+ProductRepositoryTest.java
+--
+
 [source,java]
 ----
 package aerospike.springboot.repositories;
@@ -273,7 +297,11 @@ Under the scenario we want to do something on startup we have two events we can 
 
 If you’re using Spring Boot, you do have additional events to select from. I often want to use a startup event to seed data for tests, so in this case, I need the database connection to be setup. Reading about the Spring Boot Events, I thought the event I would like to use is ApplicationPreparedEvent. But in testing it out, this was not the case. I ran into some issues with getting the event listeners setup properly in the Spring Boot Context. I found better results using the ContextRefreshedEvent.
 
-==== ProductLoader.java
+[source]
+--
+ProductLoader.java
+--
+
 
 This class implements the ApplicationListner interface, so it is called with the ContextRefresedEvent on startup. We’re using Spring to inject the Spring Data Aerospike repository into the class for our use. In this example, I’m creating two entities and saving them into Aerospike.
 
@@ -337,7 +365,10 @@ public class ProductLoader
 
 We still have our Spring Boot application class which was created earlier.
 
-==== SpringBootWebApplication.java
+[source]
+--
+SpringBootWebApplication.java
+--
 
 [source,java]
 ----

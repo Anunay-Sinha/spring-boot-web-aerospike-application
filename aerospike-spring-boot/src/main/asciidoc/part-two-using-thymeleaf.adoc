@@ -1,9 +1,9 @@
 [[part-two-using-thymeleaf]]
-= Spring Boot Web Application- using ThymeLeaf
+= Spring Boot Web Application - using ThymeLeaf
 
 In this post I am going to walk you through enabling rendering a webpage using Thymeleaf and Spring MVC.
 
-==Why Thymeleaf?
+== Why Thymeleaf?
 
 Traditionally, Spring MVC applications used Java Server Pages, or JSPs to generate html content. JSPs are a mature technology and has been around since the early days of Java. In terms of raw speed, JSPs are hard to beat too. But when you do not need the absolute raw speed of a JSP, you may want to consider alternatives to JSPs which help improve developer productivity.
 
@@ -15,22 +15,22 @@ If you were using just Spring MVC, you would need to configure the Thymeleaf tem
 
 By default, Spring Boot configures the Thymeleaf template engine to read template files from
 [source]
---
+----
 /resources/templates
---
+----
 Effectively, you as the developer just need to start making Thymeleaf templates and dropping them into
 [source]
 --
 /resources/templates
 --
-==Thymeleaf Template
+== Thymeleaf Template
 
 Let’s start with a very basic HTML file to show.
 
 === Thymeleaf Template – index.html
 [source,xml]
 ----
-<!DOCTYPE html>  //<1>
+<!DOCTYPE html>  							//<1>
 <html xmlns:th="http://www.thymeleaf.org">  //<2>
 <head lang="en">
     <title>Spring Data Aerospike Boot</title>
@@ -41,8 +41,8 @@ Let’s start with a very basic HTML file to show.
     <h2>Aerospike Fans</h2>
 </body>
 </html>
- ----
- <1> Is the standard declaration for HTML 5
+----
+<1> Is the standard declaration for HTML 5
 <2> sets a XML Namespace for Thymeleaf. This is important as you start to use the Thymeleaf extensions.
 <3> Defines the character set for the HTML file.
 
@@ -52,7 +52,10 @@ The next step we need to take care of is creating a Spring MVC controller. Becau
 
 With using Spring Boot, we only need to define our controller class. Nothing else. Like other things Spring Boot sets up sensible defaults for us.
 
-=== IndexController.java
+[source]
+--
+IndexController.java
+--
 
 At this point, we just need a very simple controller. We want to map the web root path (“/”) to the index template. A common convention used in Spring MVC is to return the string name of the template file, less the file extension. Thus to show the index.html file we defined above, our controller method needs to return the string ‘index’,
 
@@ -72,21 +75,22 @@ public class IndexController {
     }
 }
 ----
-<1>  I’ve used the @Controller annotation to make this class a Spring component and a Spring MVC controller.
-<2>  I annotated the index()  method with a @RequestMapping  annotation. By doing this, I’ve configured the root path to this controller method.
+<1>  I’ve used the *@Controller* annotation to make this class a Spring component and a Spring MVC controller.
+<2>  I annotated the index()  method with a *@RequestMapping*  annotation. By doing this, I’ve configured the root path to this controller method.
 
 == Running the Example
 
 Goto the class SpringBootWebApplication  and right click on the main()  method, then click on run.  This will run the Spring Boot application. Spring Boot will startup an embedded instance of Tomcat and deploy our application to it.
 
 BUT – if you navigate to http://localhost:8080 via your browser, the port Tomcat is listening on, you will see this
-image::Screen-Shot-authorization.png
+
+image::Screen-Shot-authorization.png[]
 
 So, what’s happening here? Because we added Spring Security into our build, Spring Boot has configured Spring Security for our use. The default behavior is to require basic auth for all endpoints. This is a good approach to secure everything by default, but it can trip you up if you’re not accustomed to working with Spring Security.
 
 == Spring Security Configuration
 
-To accommodate the Spring Security configuration, I created a new package and added the SecurityConfiguration  class. By annotating the class with the @Configuration  annotation, I’m telling Spring this is a configuration class. When doing Java configuration for Spring Security, you need to extend the WebSecurityConfigurerAdapater  class and override the configure method.
+To accommodate the Spring Security configuration, I created a new package and added the SecurityConfiguration  class. By annotating the class with the *@Configuration*  annotation, I’m telling Spring this is a configuration class. When doing Java configuration for Spring Security, you need to extend the WebSecurityConfigurerAdapater  class and override the configure method.
 
 [source,java]
 ----
@@ -109,7 +113,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 == Spring Boot and Package Scans
 
-One quick note I want to call out here, the controller and configuration classes I’ve just defined are annotated Spring Components. Spring will only pick these up when their respective package is included in a component scan. A default behavior of Spring Boot when using the @SpringBootApplication annotation is to perform a package scan on its package (and all sub packages). Because my Spring Boot application resides in the package aerospike.springboot, the annotated Spring Components in the child packages are automatically found by Spring. If they were in a different package tree, I would need to explicitly tell Spring Boot to scan that package. This is important to know, and is something that could easily trip up a beginner with Spring Boot.
+One quick note I want to call out here, the controller and configuration classes I’ve just defined are annotated Spring Components. Spring will only pick these up when their respective package is included in a component scan. A default behavior of Spring Boot when using the *@SpringBootApplication* annotation is to perform a package scan on its package (and all sub packages). Because my Spring Boot application resides in the package aerospike.springboot, the annotated Spring Components in the child packages are automatically found by Spring. If they were in a different package tree, I would need to explicitly tell Spring Boot to scan that package. This is important to know, and is something that could easily trip up a beginner with Spring Boot.
 
 === Example Page
 
@@ -193,7 +197,10 @@ Note: In this example I’m using a public CDN for the Bootstrap CSS and JQuery 
 
 Now that we have the Bootstrap CSS and JQuery resources loading with our Spring Boot web application, lets add a little Bootstrap styling to our index.html file.
 
-=== index.html
+[source]
+--
+index.html
+--
 
 [source,xml]
 ----
@@ -231,9 +238,10 @@ Now that we have the Bootstrap CSS and JQuery resources loading with our Spring 
 </html>
 ----
 
-=== Example Page
-image::samplepage.png
-== Conclusion
-At this point in this tutorial series on building a Spring Boot web application using Spring Boot, we’ve shown you how to create a basic project using the Spring Initializr and setup support for Thymeleaf. You can see how Spring Boot has made some common sense choices for us, like configuring the Thymeleaf template engine for use with Spring MVC, defaulting the locations for static resources, and providing out of the box support for WebJars.
+== Example Page
 
-In our next post on Spring Boot, we will take a look at setting up the persistence layer with Spring Boot, H2 and Spring Data JPA.
+image::samplepage.png[]
+
+== Conclusion
+
+At this point in this tutorial series on building a Spring Boot web application using Spring Boot, we’ve shown you how to create a basic project using the Spring Initializr and setup support for Thymeleaf. You can see how Spring Boot has made some common sense choices for us, like configuring the Thymeleaf template engine for use with Spring MVC, defaulting the locations for static resources, and providing out of the box support for WebJars.
